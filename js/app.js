@@ -1,26 +1,25 @@
 /*-------------------------------- Constants --------------------------------*/
-
+const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
 
 
 /*---------------------------- Variables (state) ----------------------------*/
-let board, turn, winner
+let board, turn, winner, sqIdx
 
 
 /*------------------------ Cached Element References ------------------------*/
-const squareEl=document.querySelectorAll('.board-square')
-const messageEl = document.querySelector('#message')
-console.log(squareEl)
-console.log(messageEl)
+let squareEl = document.querySelectorAll('.board-square')
+let messageEl = document.querySelector('#message')
+let boardSquare = document.querySelector('section.board')
 
 /*----------------------------- Event Listeners -----------------------------*/
-
+boardSquare.addEventListener('click', handleClick)
 
 
 /*-------------------------------- Functions --------------------------------*/
 init()
 
 function init() {
-  board = [null, -1, 1, null, null, null, null, null, null,]
+  board = [null, null, null, null, null, null, null, null, null,]
   turn = 1
   winner = null
   render()
@@ -34,18 +33,35 @@ function render() {
     if (squ === -1) {
       squareEl[idx].textContent = 'O'
     }
+    if (squ === null) {
+      squareEl[idx].textContent = ""
+    }
     })
     console.log(winner)
   if (winner === null) {
-    messageEl.textContent = `Its player ${turn}'s turn`
+    messageEl.textContent = `It's player ${turn}'s turn`
   } 
-  if (winner === 'T') {
-    messageEl.textContent = `Its a tie`
-  } 
-  if (winner === 1) {
-    messageEl.textContent = `X wins`
-  } 
-  if (winner === -1) {
-    messageEl.textContent = `O wins`
-  } 
+}
+function handleClick(evt) {
+  sqIdx = parseInt(evt.target.id.replace('sq', ''))
+    if (board[sqIdx] !== null || winner !== null){
+      return
+    } else {
+      board[sqIdx] = turn
+    }
+    turn *= -1
+    getWinner()
+    render()
+    
+}
+
+function getWinner() {
+  if (board[0] + board[1] + board[2] === 3 || board[3] + board[4] + board[5] === 3 || board[6] + board[7] + board[8] === 3 || board[0] + board[3] + board[6] === 3 || board[1] + board[4] + board[7] === 3 || board[2] + board[5] + board[8] === 3 || board[0] + board[4] + board[8] === 3 || board[2] + board[4] + board[6] === 3){
+    messageEl.textContent = "X wins our highest honor"
+    winner = true
+  }
+  if (board[0] + board[1] + board[2] === -3 || board[3] + board[4] + board[5] === -3 || board[6] + board[7] + board[8] === -3 || board[0] + board[3] + board[6] === -3 || board[1] + board[4] + board[7] === -3 || board[2] + board[5] + board[8] === -3 || board[0] + board[4] + board[8] === -3 || board[2] + board[4] + board[6] === -3){
+    messageEl.textContent = "O wins our highest honor"
+    winner = true
+  }
 }
