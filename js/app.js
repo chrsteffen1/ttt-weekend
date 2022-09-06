@@ -3,7 +3,8 @@ const winningCombos = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2
 
 
 /*---------------------------- Variables (state) ----------------------------*/
-let board, turn, winner, sqIdx, totalTurns
+let board, turn, winner, sqIdx, totalTurns, timer
+
 
 /*------------------------ Cached Element References ------------------------*/
 const squareEl = document.querySelectorAll('.board-square')
@@ -35,6 +36,7 @@ function init() {
   boxEL.style.visibility = 'visible'
   winnerEmoji.textContent = ''
   winnerEmoji.className = ''
+  timer = 5
   render()
 }
 
@@ -59,39 +61,37 @@ function render() {
       if (totalTurns !== 0){
         resetBtn.removeAttribute('hidden')
       }
-  
-}
-
-
-
-function handleClick(evt) {
-  sqIdx = parseInt(evt.target.id.replace('sq', ''))
-    if (board[sqIdx] !== null || winner !== null){
-      return
-    } else {
-      board[sqIdx] = turn
+      
     }
-    turn *= -1
-    totalTurns += 1
     
-    getWinner()
-    render()  
-    winnerBoard() 
+    
+    
+    function handleClick(evt) {
+      sqIdx = parseInt(evt.target.id.replace('sq', ''))
+      if (board[sqIdx] !== null || winner !== null){
+        return
+      } else {
+        board[sqIdx] = turn
+      }
+      turn *= -1
+      totalTurns += 1
+      
+      getWinner()
+      render()  
+      winnerBoard() 
 }
 
 function getWinner() {
   if (board[0] + board[1] + board[2] === 3 || board[3] + board[4] + board[5] === 3 || board[6] + board[7] + board[8] === 3 || board[0] + board[3] + board[6] === 3 || board[1] + board[4] + board[7] === 3 || board[2] + board[5] + board[8] === 3 || board[0] + board[4] + board[8] === 3 || board[2] + board[4] + board[6] === 3){
-    messageEl.textContent = "👽 wins our highest honor"
     winner = true
   }
   if (board[0] + board[1] + board[2] === -3 || board[3] + board[4] + board[5] === -3 || board[6] + board[7] + board[8] === -3 || board[0] + board[3] + board[6] === -3 || board[1] + board[4] + board[7] === -3 || board[2] + board[5] + board[8] === -3 || board[0] + board[4] + board[8] === -3 || board[2] + board[4] + board[6] === -3){
-    messageEl.textContent = "🛸 wins our highest honor"
     winner = true
   }
   if (totalTurns === 9 && winner === null){
     winner = 'T'
   }
-  messageEl.textContent = `${turn === 1 ? "👽" : "🛸"} WON! Time to Blast Off`
+  messageEl.textContent = `${turn === 1 ? "👽" : "🛸"} WON! Blast Off`
 }
 
 function winnerBoard() {
@@ -103,5 +103,4 @@ function winnerBoard() {
     winnerEmoji.className = 'animate__animated animate__bounceOutUp animate__slow'
     return ((turn === -1 ? winnerEmoji.textContent= "👽"  : winnerEmoji.textContent= "🛸"))
   } 
-
 }
